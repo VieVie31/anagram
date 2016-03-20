@@ -76,7 +76,7 @@ def pgcd(a, b): #http://python.jpvweb.com/mesrecettespython/doku.php?id=pgcd_ppc
         rp, up = (rs - q * rp), (us - q * up)
     return r
 
-@memoize
+#@memoize #impossible cu que generator
 def decompose(n):
     """Retourne un <generator object> permettant d'obtenir la decomposition
     de n en nombres premiers.
@@ -197,7 +197,7 @@ def r(word_key, keys, tlr=0, erreur_cumulee=0):
             print(str(k) + ", " + str(new_tlr) + " -> " + str(dictionnaire[k]))
 
 
-if __name__ == "__main__":
+def load_lexicon():
     dictionnaire = {}
     for v in open(DICO_PATH, 'r').read().split(chr(10)):
         ch = compute_hash(v)
@@ -208,4 +208,8 @@ if __name__ == "__main__":
             dictionnaire[(ch, lv)] = [v]
     try:dictionnaire.pop((1, 0))
     except: pass
+    return dictionnaire
+
+if __name__ == "__main__":
+    dictionnaire = load_lexicon()
 
