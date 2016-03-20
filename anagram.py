@@ -197,27 +197,15 @@ def r(word_key, keys, tlr=0, erreur_cumulee=0):
             print(str(k) + ", " + str(new_tlr) + " -> " + str(dictionnaire[k]))
 
 
+if __name__ == "__main__":
+    dictionnaire = {}
+    for v in open(DICO_PATH, 'r').read().split(chr(10)):
+        ch = compute_hash(v)
+        lv = len(v)
+        if (ch, lv) in dictionnaire:
+            dictionnaire[(ch, lv)].append(v)
+        else:
+            dictionnaire[(ch, lv)] = [v]
+    try:dictionnaire.pop((1, 0))
+    except: pass
 
-
-s = time()
-dictionnaire = {}
-for v in open(DICO_PATH, 'r').read().split(chr(10)):
-    ch = compute_hash(v)
-    lv = len(v)
-    if (ch, lv) in dictionnaire:
-        dictionnaire[(ch, lv)].append(v)
-    else:
-        dictionnaire[(ch, lv)] = [v]
-try:dictionnaire.pop((1, 0))
-except: pass
-s = time() - s
-print(s)
-
-s=time();best(4);s=time()-s;
-print(s)
-s=time();best(4);s=time()-s;
-print(s)
-
-import random
-s=time();[pgcd(random.randrange(0, 500), random.randrange(0, 500)) for i in range(100000)];s=time()-s
-print(s)
