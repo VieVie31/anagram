@@ -58,6 +58,18 @@ def anagrammes(word):
     try:    return dictionnaire[hash_dict(word)]
     except: return []
 
+def presque_anagrammes(word, tlr):
+    L = []
+    word_key, word_ln = hash_dict(word)
+    for k, ln in  dictionnaire:
+        if abs(ln - word_ln) == tlr:
+            p = pgcd(word_key, k)
+            d_sups = list(decompose(k // p))
+            word_sups = list(decompose(word_key // p))
+            if len(d_sups) + len(word_sups) == tlr:
+                L.extend(dictionnaire[(k, ln)])
+    return L
+
 def pgcd(a, b): #http://python.jpvweb.com/mesrecettespython/doku.php?id=pgcd_ppcm
     """Retourne le pgcd de a et b. Version etendu du pgcd avec le 1er coef
     de bezout (pour inversion modulaire de a).
