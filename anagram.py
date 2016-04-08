@@ -199,15 +199,89 @@ def anagrammes_maximaux():
     return L
 
 
-def r(word_key, keys, tlr=0, erreur_cumulee=0):
-    if word_key[1] == 0:
-        return
-    for k in keys:
-        if compose(word_key, k, max(0, tlr - erreur_cumulee)):
-            new_erreur_cumulee = erreur_cumulee + compose_with_error(word_key, k)
-            new_tlr = tlr - new_erreur_cumulee
-            print(str(k) + ", " + str(new_tlr) + " -> " + str(dictionnaire[k]))
+out_set = set()
+def placer(word_key, keys, sol, indice):
+    global out_set
+    if word_key[0] == 1 and word_key[1] == 0:
+        out_set.add(tuple(sol))
+    else:
+        for i, k in enumerate(keys):
+            if word_key[1] >= k[1] and word_key[0] % k[0] == 0 and max(decompose(k[0])) < indice:
+                keys.remove(k)
+                placer(
+                    (word_key[0] // k[0], word_key[1] - k[1]),
+                    keys, sol + [k],
+                    max(decompose(k[0])))
+                keys.append(k)                
 
+"""
+>>> out_set = set()
+>>> s=time();placer(hash_dict("ETFROMAGE"), sorted(list(dictionnaire.keys())), [], 102);s=time()-s
+>>> s
+302.3572189807892
+>>> len(out_set)
+75
+>>> 302 / 60
+5.033333333333333
+>>> out_set = set()
+>>> s=time();placer(hash_dict("CAHMPOLION"), sorted(list(dictionnaire.keys())), [], 102);s=time()-s
+>>> s
+1187.0042028427124
+>>> _ / 60
+19.783403380711874
+>>> len(out_set)
+187
+"""
+
+def ecremage(word, keys):
+    return list(filter(lambda k: k[0] <= hash_dict(word)[0] and k[1] <= hash_dict(word)[1], keys))
+
+"""
+>>> out_set = set()
+>>> s=time();placer(hash_dict("ROSE"), sorted(list(dictionnaire.keys())), [], 102);s=time()-s
+>>> s
+2.665476083755493
+>>> out_set = set()
+>>> s=time();placer(hash_dict("ROSE"), sorted(ecremage("ROSE", dictionnaire.keys())), [], 102);s=time()-s
+>>> s
+0.43271303176879883
+>>> out_set
+{((57, 2), (22, 2)), ((209, 2), (6, 2)), ((1254, 4),)}
+>>> 
+>>> 
+>>> 
+>>> out_set = set()
+>>> s=time();placer(hash_dict("ETFROMAGE"), sorted(list(dictionnaire.keys())), [], 102);s=time()-s
+>>> s
+302.3572189807892
+>>> len(out_set)
+75
+>>> s=time();placer(hash_dict("ETFROMAGE"), sorted(ecremage("ETFROMAGE", dictionnaire.keys())), [], 102);s=time()-s
+>>> s
+100.85353899002075
+>>> len(out_set)
+78
+>>> 
+>>> 
+>>> 
+>>> out_set = set()
+>>> s=time();placer(hash_dict("CAHMPOLION"), sorted(list(dictionnaire.keys())), [], 102);s=time()-s
+>>> s
+1187.0042028427124
+>>> _ / 60
+19.783403380711874
+>>> len(out_set)
+187
+>>> out_set = set()
+>>> s=time();placer(hash_dict("CHAMPOLION"), sorted(ecremage("CHAMPOLION", dictionnaire.keys())), [], 102);s=time()-s
+>>> s
+663.3149127960205
+>>> _ / 60
+11.055248546600343
+>>> len(out_set)
+187
+>>> 
+"""
 
 def load_lexicon():
     dictionnaire = {}
