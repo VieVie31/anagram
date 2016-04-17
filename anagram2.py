@@ -28,8 +28,20 @@ def gen_anagram(anagram, possible_words):
                 yield [word] + y
 
 
+def gen_anagram(anagram, possible_words, limit=0, rec=0):
+    for word in possible_words:
+        x = check_word(anagram, word)
+        if x == True:
+            yield [word]
+        elif x and rec < limit:
+                for y in gen_anagram(x, possible_words, limit-1, rec+1):
+                    if len(y) < limit:
+                        yield [word] + y
+
+
+
 dictionary = open("ods.txt").readlines()
-anagram = ''.join(sorted("CHAMPOLLOIN"))
+anagram = ''.join(sorted("JEVAISTETUER"))
 possible_words = set() #plus rapide
 
 lexique = {}
@@ -74,7 +86,7 @@ print "go"
 start = time()
 
 res = set()
-for x in gen_anagram(anagram, possible_words):
+for x in gen_anagram(anagram, possible_words, 2):
     res.add(tuple(sorted(x)))
 
 c = 0
